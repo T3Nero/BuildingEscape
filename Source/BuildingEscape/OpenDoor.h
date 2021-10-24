@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
 
@@ -25,5 +26,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	float OpenDoorAngle = 90.f;
+
+	float InitialAngle;
+	float CurrentAngle;
+	FRotator OpenRotation;
+
+	UPROPERTY(EditAnywhere);
+	float OpenDoorAngle;
+
+	UPROPERTY(EditAnywhere);
+	ATriggerVolume* PressurePlate;
 };

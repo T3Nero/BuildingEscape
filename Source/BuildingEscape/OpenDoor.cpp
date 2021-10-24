@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "OpenDoor.h"
 #include "GameFramework/Actor.h"
+#include "OpenDoor.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -20,7 +20,9 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//...
+	InitialAngle = GetOwner()->GetActorRotation().Yaw;
+	CurrentAngle = InitialAngle;
+	OpenDoorAngle += InitialAngle;
 }
 
 
@@ -32,9 +34,8 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	// UE_LOG(LogTemp, Warning, TEXT("%s"), *GetOwner()->GetActorRotation().ToString());
 	// UE_LOG(LogTemp, Warning, TEXT("Yaw is: %f"), GetOwner()->GetActorRotation().Yaw);
 
-	FRotator OpenRotation;
-	float CurrentAngle = GetOwner()->GetActorRotation().Yaw;
-	OpenRotation.Yaw = FMath::FInterpTo(CurrentAngle, OpenDoorAngle, DeltaTime, 2);
+	CurrentAngle = FMath::FInterpTo(CurrentAngle, OpenDoorAngle, DeltaTime, 1);
+	OpenRotation.Yaw = CurrentAngle;
 	GetOwner()->SetActorRotation(OpenRotation);
 }
 
