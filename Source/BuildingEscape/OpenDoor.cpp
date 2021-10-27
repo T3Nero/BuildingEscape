@@ -45,13 +45,15 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	if(PressurePlate && PressurePlate->IsOverlappingActor(ActorToOpenDoor))
 	{
 		OpenDoor(DeltaTime);
+		DoorLastOpened = GetWorld()->GetTimeSeconds();
 	}
 	else
 	{
-		CloseDoor(DeltaTime);
+		if (GetWorld()->GetTimeSeconds() - DoorLastOpened >= DoorCloseDelay)
+		{
+			CloseDoor(DeltaTime);
+		}
 	}
-	
-	
 }
 
 void UOpenDoor::OpenDoor(float DeltaTime)
@@ -63,7 +65,7 @@ void UOpenDoor::OpenDoor(float DeltaTime)
 
 void UOpenDoor::CloseDoor(float DeltaTime)
 {
-	CurrentAngle = FMath::FInterpTo(CurrentAngle, InitialAngle, DeltaTime, 2);
+	CurrentAngle = FMath::FInterpTo(CurrentAngle, InitialAngle, DeltaTime, 3);
 	OpenRotation.Yaw = CurrentAngle;
 	GetOwner()->SetActorRotation(OpenRotation);
 }

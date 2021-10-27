@@ -32,6 +32,9 @@ private:
 	float CurrentAngle;
 	FRotator OpenRotation;
 
+	float DoorLastOpened = 0.f;
+	float DoorCloseDelay = .2f;
+
 	UPROPERTY(EditAnywhere);
 	float OpenDoorAngle;
 
