@@ -26,7 +26,7 @@ void UWorldPosition::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("%s is at position: %s"), *ObjectName, *ObjectPosition);
 
 	
-	
+
 }
 
 
