@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "DrawDebugHelpers.h"
+#include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Grabber.h"
 
@@ -40,7 +42,22 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	);
 
 	//Log out to test
-	UE_LOG(LogTemp, Warning, TEXT("Players Location: %s"), *PlayerViewPointLocation.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("Players Rotation: %s"), *PlayerViewPointRotation.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("Players Location: %s"), *PlayerViewPointLocation.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("Players Rotation: %s"), *PlayerViewPointRotation.ToString());
+
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+	DrawDebugLine
+	(
+		GetWorld(), 
+		PlayerViewPointLocation, 
+		LineTraceEnd,
+		FColor(0, 255, 0), //Green Line
+		false, 
+		0.f,
+		0,
+		2.f
+	);
+
+
 }
 
