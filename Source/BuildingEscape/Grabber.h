@@ -36,5 +36,11 @@ private:
 	void Release();
 	void FindPhysicsHandle();
 	void SetupInputComponent();
-	FHitResult GetFirstPhysicsBodyInReach() const;	
+	FHitResult GetFirstPhysicsBodyInReach() const;
+
+	//Return the end of the Line Trace
+	FVector GetPlayerReach() const; 	
+
+	//Return Players World Position
+	FVector GetPlayersPosition() const;
 };
