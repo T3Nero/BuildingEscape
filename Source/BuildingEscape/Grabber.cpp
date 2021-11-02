@@ -28,7 +28,7 @@ void UGrabber::FindPhysicsHandle()
 {
 	// Check for Physics Handle Component
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle == nullptr)
+	if (!PhysicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Physics Handle Component attached to: %s"), *GetOwner()->GetName());
 	}
@@ -72,10 +72,12 @@ void UGrabber::Grab()
 {
 	FHitResult Hit = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent* ComponentToGrab = Hit.GetComponent();
+	AActor* ActorHit = Hit.GetActor();
 
 
-	if(Hit.GetActor())
+	if(ActorHit)
 	{
+		if(!PhysicsHandle) {return;}
 		PhysicsHandle->GrabComponentAtLocation
 		(
 			ComponentToGrab,
@@ -87,6 +89,7 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
+	if(!PhysicsHandle) {return;}
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -95,6 +98,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if(!PhysicsHandle) {return;}
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		PhysicsHandle->SetTargetLocation(GetPlayerReach());

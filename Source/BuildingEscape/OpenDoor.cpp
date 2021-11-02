@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/PrimitiveComponent.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
@@ -27,7 +28,7 @@ void UOpenDoor::BeginPlay()
 	InitialAngle = GetOwner()->GetActorRotation().Yaw;
 	CurrentAngle = InitialAngle;
 	OpenDoorAngle += InitialAngle;
-	ActorToOpenDoor = GetWorld()->GetFirstPlayerController()->GetPawn();
+	FindAudioComponent();
 
 	if(!PressurePlate)
 	{
@@ -36,6 +37,14 @@ void UOpenDoor::BeginPlay()
 
 }
 
+void UOpenDoor::FindAudioComponent()
+{
+	AudioComponent = GetOwner()->FindComponentByClass<UAudioComponent>();
+	if(!AudioComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No AudioComponent Found On: %s"), *GetOwner()->GetName());
+	}
+}
 
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -63,6 +72,13 @@ void UOpenDoor::OpenDoor(float DeltaTime)
 	CurrentAngle = FMath::FInterpTo(CurrentAngle, OpenDoorAngle, DeltaTime, 1);
 	OpenRotation.Yaw = CurrentAngle;
 	GetOwner()->SetActorRotation(OpenRotation);
+
+	if(!AudioComponent) {return;}
+	if(!DoorSoundPlayed)
+	{
+		AudioComponent->Play();
+		DoorSoundPlayed = true;
+	}
 }
 
 void UOpenDoor::CloseDoor(float DeltaTime)
@@ -70,6 +86,13 @@ void UOpenDoor::CloseDoor(float DeltaTime)
 	CurrentAngle = FMath::FInterpTo(CurrentAngle, InitialAngle, DeltaTime, 3);
 	OpenRotation.Yaw = CurrentAngle;
 	GetOwner()->SetActorRotation(OpenRotation);
+
+	if(!AudioComponent) {return;}
+	if(DoorSoundPlayed)
+	{
+		AudioComponent->Play();
+		DoorSoundPlayed = false;
+	}
 }
 
 float UOpenDoor::TotalMassOfActors() const
@@ -78,6 +101,7 @@ float UOpenDoor::TotalMassOfActors() const
 
 	// Find all Overlapping Actors
 	TArray<AActor*> OverlappingActors;
+	if(!PressurePlate) {return CurrentMass;}
 	PressurePlate->GetOverlappingActors( OUT OverlappingActors);
 
 	// Add up Actors Masses
